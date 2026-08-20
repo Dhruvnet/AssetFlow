@@ -28,7 +28,7 @@ class Asset(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["asset_tag"]
+        ordering = ["id"]
 
     def __str__(self):
         return f"{self.asset_tag} ({self.name})"
