@@ -6,6 +6,7 @@ from .reporting import (
     EmployeeSummaryView,
     OverdueCheckOutReportView,
 )
+from .health import HealthCheckView
 
 __all__ = [
     "AssetDetailView",
@@ -15,4 +16,5 @@ __all__ = [
     "EmployeeSummaryView",
     "OverdueCheckOutReportView",
     "EmployeeCheckOutHistoryView",
+    "HealthCheckView",
 ]
