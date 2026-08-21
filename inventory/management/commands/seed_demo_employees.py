@@ -6,52 +6,89 @@ from inventory.models import Employee
 class Command(BaseCommand):
     help = "Seed demo employees for local development and API testing."
 
-    EMPLOYEES = [
-        {
-            "employee_code": "EMP001",
-            "full_name": "Alice Johnson",
-            "email": "alice@example.com",
-            "is_active": True,
-        },
-        {
-            "employee_code": "EMP002",
-            "full_name": "Bob Smith",
-            "email": "bob@example.com",
-            "is_active": True,
-        },
-        {
-            "employee_code": "EMP003",
-            "full_name": "Carol Williams",
-            "email": "carol@example.com",
-            "is_active": True,
-        },
-        {
-            "employee_code": "EMP004",
-            "full_name": "David Brown",
-            "email": "david@example.com",
-            "is_active": False,
-        },
+    FIRST_NAMES = [
+        "Alice",
+        "Bob",
+        "Carol",
+        "David",
+        "Emma",
+        "Frank",
+        "Grace",
+        "Henry",
+        "Ivy",
+        "Jack",
+        "Karen",
+        "Leo",
+        "Maya",
+        "Noah",
+        "Olivia",
+        "Peter",
+        "Quinn",
+        "Rachel",
+        "Sam",
+        "Tina",
     ]
 
-    def handle(self, *args, **options):
-        created_count = 0
-        existing_count = 0
+    LAST_NAMES = [
+        "Johnson",
+        "Smith",
+        "Williams",
+        "Brown",
+        "Davis",
+        "Miller",
+        "Wilson",
+        "Moore",
+        "Taylor",
+        "Anderson",
+        "Thomas",
+        "Jackson",
+        "White",
+        "Harris",
+        "Martin",
+        "Thompson",
+        "Garcia",
+        "Martinez",
+        "Robinson",
+        "Clark",
+    ]
 
-        for employee_data in self.EMPLOYEES:
-            _, created = Employee.objects.get_or_create(
-                employee_code=employee_data["employee_code"],
-                defaults=employee_data,
+    EMPLOYEES_PER_RUN = 4
+
+    def handle(self, *args, **options):
+        existing_count = Employee.objects.count()
+
+        for index in range(
+            1,
+            self.EMPLOYEES_PER_RUN + 1,
+        ):
+            employee_number = existing_count + index
+
+            name_index = (
+                employee_number - 1
+            ) % len(self.FIRST_NAMES)
+
+            full_name = (
+                f"{self.FIRST_NAMES[name_index]} "
+                f"{self.LAST_NAMES[name_index]}"
             )
 
-            if created:
-                created_count += 1
-            else:
-                existing_count += 1
+            Employee.objects.create(
+                employee_code=(
+                    f"EMP{employee_number:03d}"
+                ),
+                full_name=full_name,
+                email=(
+                    f"employee{employee_number:03d}"
+                    "@example.com"
+                ),
+                is_active=(
+                    employee_number % 4 != 0
+                ),
+            )
 
         self.stdout.write(
             self.style.SUCCESS(
-                "Employee seed complete. "
-                f"{created_count} new employees created, "
-                f"{existing_count} already existed."
+                f"Employee seed complete. "
+                f"{self.EMPLOYEES_PER_RUN} new employees created."
             )
         )
