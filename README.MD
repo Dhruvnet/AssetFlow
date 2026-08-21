@@ -222,8 +222,7 @@ one notice per check-out. It's scheduled hourly via Celery Beat inside the
 Run it manually if needed:
 
 ```bash
-docker compose exec web python manage.py shell -c \
-  "from inventory.tasks import flag_overdue_checkouts; flag_overdue_checkouts.delay()"
+docker compose exec web python manage.py shell -c "from inventory.tasks import flag_overdue_checkouts; flag_overdue_checkouts.delay()"
 ```
 
 Watch the worker logs to confirm it ran:
@@ -237,7 +236,7 @@ docker compose logs -f worker
 ## 8. Running tests
 
 ```bash
-docker compose exec web pytest
+docker compose exec web pytest -v
 ```
 
 or, without Docker (see [Appendix](#appendix-running-without-docker) for
