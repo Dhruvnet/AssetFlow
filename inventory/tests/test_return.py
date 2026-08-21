@@ -6,12 +6,6 @@ from rest_framework.test import APIClient
 
 from inventory.models import Asset, CheckOut, Employee
 
-
-@pytest.fixture
-def api_client():
-    return APIClient()
-
-
 @pytest.fixture
 def checked_out_asset(db):
     asset = Asset.objects.create(

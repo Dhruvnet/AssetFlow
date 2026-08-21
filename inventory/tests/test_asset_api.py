@@ -5,12 +5,6 @@ from rest_framework.test import APIClient
 
 from inventory.models import Asset, CheckOut, Employee
 
-
-@pytest.fixture
-def api_client():
-    return APIClient()
-
-
 @pytest.fixture
 def make_asset(db):
     def _make(asset_tag="LAPTOP-001", **kwargs):

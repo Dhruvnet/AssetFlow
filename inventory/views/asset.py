@@ -43,10 +43,7 @@ class AssetListCreateView(generics.ListCreateAPIView):
         asset = serializer.save()
 
         return Response(
-            {
-                "message": "Asset created successfully.",
-                "data": AssetListSerializer(asset).data,
-            },
+            AssetListSerializer(asset).data,
             status=status.HTTP_201_CREATED,
         )
 

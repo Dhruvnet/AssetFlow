@@ -11,11 +11,6 @@ from inventory.services.checkout import create_checkout
 
 
 @pytest.fixture
-def api_client():
-    return APIClient()
-
-
-@pytest.fixture
 def make_asset(db):
     def _make(
         asset_tag="LAPTOP-001",
