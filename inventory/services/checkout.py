@@ -4,6 +4,7 @@ from rest_framework.exceptions import (
     ValidationError,
 )
 
+from inventory.exceptions import Conflict
 from inventory.models import Asset, CheckOut, Employee
 
 
@@ -20,7 +21,7 @@ def create_checkout(
     with transaction.atomic():
 
         # Lock the asset row to prevent two simultaneous
-        # checkout requests from succeeding.
+        # checkout requests for the SAME ASSET from succeeding.
         try:
             asset = (
                 Asset.objects.select_for_update()
@@ -32,8 +33,13 @@ def create_checkout(
             )
 
         try:
-            employee = Employee.objects.get(
-                employee_code=employee_code
+            # Lock the employee row too — without this, two concurrent
+            # requests for the SAME EMPLOYEE against two DIFFERENT assets
+            # can both read open_checkout_count < 3 before either commits,
+            # producing 4 open checkouts for one employee (rule 3 violation).
+            employee = (
+                Employee.objects.select_for_update()
+                .get(employee_code=employee_code)
             )
         except Employee.DoesNotExist:
             raise NotFound(
@@ -50,9 +56,7 @@ def create_checkout(
             )
 
         if asset.status != Asset.Status.AVAILABLE:
-            # Conflict status will be handled separately if your
-            # project already has a custom exception for 409.
-            raise ValidationError(
+            raise Conflict(
                 {
                     "asset_tag": (
                         "Asset is not available for checkout."
@@ -66,7 +70,7 @@ def create_checkout(
         ).count()
 
         if open_checkout_count >= MAX_OPEN_CHECKOUTS:
-            raise ValidationError(
+            raise Conflict(
                 {
                     "employee_code": (
                         f"Employee already has the maximum of "

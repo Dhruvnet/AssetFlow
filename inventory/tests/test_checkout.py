@@ -139,7 +139,7 @@ def test_checkout_rejects_already_checked_out_asset(
         format="json",
     )
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert "asset_tag" in response.data
     assert CheckOut.objects.count() == 0
 
@@ -161,7 +161,7 @@ def test_checkout_rejects_asset_in_maintenance(
         format="json",
     )
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert "asset_tag" in response.data
 
 
@@ -335,7 +335,7 @@ def test_checkout_rejects_employee_at_limit(
         format="json",
     )
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert "employee_code" in response.data
 
     new_asset.refresh_from_db()
@@ -365,7 +365,7 @@ def test_failed_checkout_does_not_change_asset_status(
         format="json",
     )
 
-    assert response.status_code == 400
+    assert response.status_code == 409
 
     asset.refresh_from_db()
 
