@@ -6,6 +6,8 @@ Redis and Celery.
 
 ---
 
+🎥 **Project Demo:** [Watch the AssetFlow Demo on YouTube](https://youtu.be/d06ax7ExF6M?si=3IyuGWTf2ELqEcF3)
+
 ## Prerequisites
 
 **Recommended path — Docker:**
